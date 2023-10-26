@@ -39,7 +39,8 @@ from shadow import *
 filename_list=['data/debords_casquettes_epais.ifc',
                 'data/debords_casquettes_fins.ifc',
                 'data/debords_epais.ifc',
-                'data/debords_fins.ifc']
+                'data/debords_fins.ifc',
+                'data/debords_casquettes_fins_triangle.ifc']
                 
 tn_angle=[0.0,np.pi*.5,np.pi,3.*np.pi*.5]
 orientations_name=['NORD','EST','SUD','OUEST']
@@ -55,7 +56,7 @@ x=np.arange(0.15,1.15,.1)
                 
 
 
-for filename in filename_list:
+for filename in filename_list[4:]:
     rss=rtaa_solar_study(filename)
     rss.add_building_elements([],['IfcWall','IfcSlab'])
     rss.add_solar_elements([],['IfcWindow','IfcDoor'])
