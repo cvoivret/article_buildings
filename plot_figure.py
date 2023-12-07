@@ -4,19 +4,21 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
+### Global setting of mpl
 plt.rcParams['text.usetex'] = True
-
 font = {'family' : 'normal',
         'weight' : 'bold',
         'size'   : 16}
 
 plt.rc('font', **font)
-
-
-# prediction VS mesure
 plt.clf()
+
+
+#### overhang and vertical fins
+# results from IFC analysis
+
 debcas=pd.read_csv('data/debords_casquettes_fins.csv',index_col=0)
-#rtaas=pd.read_csv('data/debords_casquette.xlsx')
+# results from rtaa spreadsheet
 rtaadebcas= pd.read_excel('data/debords_casquette.xlsx')
 x=np.arange(0.1,1.1,.1)
 debcas=debcas.set_index(x)
@@ -33,20 +35,20 @@ for col,c,lab in zip(columns,colors,orient):
     err=np.abs(debcas[col]-rtaadebcas[col])
     error_debcas[col]=err.mean()
     all_error.append(err.values)
+
 plt.xlabel('$d$')
 plt.ylabel('$S_R$')
-
 plt.ylim(0,1)
 plt.xlim(0.1,1.0)
-
 plt.legend(ncol=2,loc='lower left')
-#plt.show()
 plt.savefig('debords_casquettes_rtaa.png')
-
-
 plt.clf()
+
+
+#### overhang only
+# results from IFC analysis
 deb=pd.read_csv('data/debords_fins.csv',index_col=0)
-#rtaas=pd.read_csv('data/debords_casquette.xlsx')
+# results from rtaa spreadsheet
 rtaadeb= pd.read_excel('data/debords.xlsx')
 x=np.arange(0.1,1.1,.1)
 deb=deb.set_index(x)
@@ -65,18 +67,48 @@ plt.xlabel('$d$')
 plt.ylabel('$S_R$')
 plt.ylim(0,1)
 plt.xlim(0.1,1.0)
-
-
 plt.legend(ncol=2)
-#plt.show()
 plt.savefig('debords_rtaa.png')
 plt.clf()
 
+
+### evaluation of error by orientation and by model
 error={'h':error_deb,'c':error_debcas}
 err_pd=pd.DataFrame(data=error)
 global_error=np.array(all_error).flatten().mean()
+print(" Error by orientation and model")
 print(err_pd)
-print('global error ',global_error)
+print(' Global error (all orientation and models) :::  ',global_error,' \n')
+
+
+rtaadebcas.drop('d/h',axis=1,inplace=True)
+rtaadeb.drop('Unnamed: 0',axis=1,inplace=True)
+
+
+
+print(" ### Raw values in Tex format ### \n")
+
+print(' overhang (rtaa spreadsheet)')
+s=rtaadeb.style.format(precision=2)
+s.format_index(precision=1)
+print(s.to_latex())
+
+
+print(' overhang and fins (rtaa spreadsheet)')
+s=rtaadebcas.style.format(precision=2)
+s.format_index(precision=1)
+print(s.to_latex())
+print(' overhang (IFC)  ')
+s=deb.style.format(precision=2)
+s.format_index(precision=1)
+print(s.to_latex())
+print(' overhang and fins (IFC)  ')
+s=debcas.style.format(precision=2)
+s.format_index(precision=1)
+print(s.to_latex())
+
+
+
 
 
 
@@ -112,46 +144,3 @@ plt.legend()
 #plt.show()
 plt.savefig('debords_casquette_triangle.png')
 
-
-
-"""
-# fin VS epais
-plt.clf()
-deb_fin=pd.read_csv('data/debords_fins.csv',index_col=0)
-deb_epais=pd.read_csv('data/debords_epais.csv',index_col=0)
-x=np.arange(0.1,1.1,.1)
-deb_fin=deb_fin.set_index(x)
-deb_epais=deb_epais.set_index(x)
-columns=deb_fin.columns
-colors=['r','g','b','k']
-marks=['x','d','o']
-
-for col,c in zip(columns,colors):
-    plt.plot(x,deb_fin[col],'-',color=c,label=col+'_fin')
-    plt.plot(x,deb_epais[col],'--',color=c,label=col+'_epais')
-plt.ylim(0,1)
-plt.xlim(0.0,1.1)
-plt.legend()
-plt.savefig('debords.png')
-"""
-#plt.show()
-"""
-
-# fin VS epais casquette
-plt.clf()
-deb_fin=pd.read_csv('data/debords_casquettes_fins.csv',index_col=0)
-deb_epais=pd.read_csv('data/debords_casquettes_epais.csv',index_col=0)
-x=np.arange(0.1,1.1,.1)
-deb_fin=deb_fin.set_index(x)
-deb_epais=deb_epais.set_index(x)
-
-for col,c in zip(columns,colors):
-    plt.plot(x,deb_fin[col],'-',color=c,label=col+'_fin')
-    plt.plot(x,deb_epais[col],'--',color=c,label=col+'_epais')
-
-plt.ylim(0,1)
-plt.xlim(0.0,1.1)
-
-plt.legend()
-plt.savefig('debords_casquette.png')
-"""
